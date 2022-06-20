@@ -1,49 +1,53 @@
 from datetime import datetime
 
 class Account:
-    def __init__(self,name,phone_number,account_number,id_number):
-        self.name=name
-        self.phone_number=phone_number
+    def __init__(self,account_name,account_number):
+        self.account_name=account_name
         self.account_number=account_number
-        self.id_number=id_number
         self.balance=0
         self.deposits=[]
+        self.statement = []
         self.withdrawals=[]
         self.transaction=100
         self.loan_balance=0
         
     
-    def withdraw (self,amount):
-        self.amount=amount
-        date=datetime.now()
-       
-        if amount>self.balance:
-            return f"Dear customer, you have insuffient funds for this withdraw"
-        elif amount<=0:
-            return f"Dear customer, you can't withdraw zero amount "            
+    def  deposit(self,amount):
+        if amount <=0:
+             print(f"Deposit must be positive amount")
         else:
-             self.balance -=amount
-             dct={"date":date.strftime("%d/%m/%Y"),"amount":amount,"narration":f'thank you for withdrawing {amount} on {date}'}
-             self.withdrawals.append(dict)
-        withdrawal_amount=self.balance-self.transaction
-        if amount>withdrawal_amount:
-            return "insufficient balance"
-        self.balance-=amount+self.transaction
-        return f"You have withdrawn ksh.{self.withdrawals} and your new balance is {self.balance} on {date.strftime('%d/%m/%Y')})"
-              
-      
-    def deposit(self,amount):
-        date=datetime.now()
+            self.balance+=amount   
+            now= datetime.now()
+            transaction={
+                "amount":amount,
+                "time":now,
+                "Narration":"Deposit"
+            }
+            self.deposits.append(amount)
+            self.statement.append(transaction) 
+            print(f"Hello {self.account_name}, your new balance is {self.balance} and your deposits are {self.deposits}and your statement is {self.statement}" )
+
+
+    def withdrawal(self,amount):
         
-        self.amount=amount 
-        if amount<=0:
-            return f"deposit amount must be greater than zero(0)"
-        else:
-             self.balance+=amount
-             dct={"date":date.strftime("%d/%m/%Y"),"amount":amount,"narration":f'thank you for depositing {amount} on {date}'}
-             self.deposits.append(dct)
-             
-        return f"You have deposited ksh.{amount} and your new balance is {self.balance})"
+        if amount+self.transaction_fee > self.balance:
+            print(f"Hello {self.account_name}, your balance is {self.balance} you can't withdraw {amount}")    
+        elif amount <=0:
+            print(f"Withdrawal amount must be greater than 0")
+        else:    
+            self.balance-=amount+self.transaction_fee
+            now= datetime.now()
+            transaction={
+                "amount":amount,
+                "time":now,
+                "Narration":"Withdraw"
+            }
+            self.withdrawals.append(amount)
+            self.statement.append(transaction)
+            print(f"Hello {self.account_name}, your new balance is {self.balance} and the withdrawals are {self.statement}")    
+
+
+
     
          
     def deposit_statement(self):
@@ -57,9 +61,12 @@ class Account:
         return f" Your current balance is  {self.balance}" 
     
     def full_statement(self):
-        statement=self.deposits+self.withdrawals
-        for a in statement:
-            print(a["narration"])    
+        for transaction in self.statement:
+            amount = transaction["amount"]
+            Narration= transaction["Narration"]
+            time= transaction["time"]
+            date= time.strftime("%x/%X")
+            print(f"{date}----{Narration}-----{amount}")  
     def borrow(self,amount):
         sum=0
         for y in self.deposits:
